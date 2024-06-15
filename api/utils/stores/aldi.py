@@ -18,9 +18,16 @@ class Aldi(Store):
         page.goto(self.URL.format(search_term))
         locator = page.get_by_text(re.compile('\$\d+.\d\d'))
         locator.nth(0).wait_for()
+        
+        for _ in range(10):
+            page.keyboard.press('PageDown')
+            time.sleep(0.1)
 
     def _get_product_name(self, product_html):
-        return product_html.find('span', {'class': 'e-10h3gwf'}).text.strip()
+        name_div = product_html.find('h2', {'class': 'e-1s8iwuk'})
+        if name_div:
+            return name_div.text.strip()
+        return ''
 
     def _get_product_price(self, product_html):
         price_div = product_html.find('div', {'class': 'e-k008qs'})
@@ -32,10 +39,8 @@ class Aldi(Store):
     
     def _get_product_quantity(self, product_html):
         quantity = product_html.find('div', {'class': 'e-isbvdh'})
-        # if not quantity or not quantity.text:
-        #     quantity = product_html.find('div', {'class': 'e-zjik7'})
-        # elif not quantity or not quantity.text:
-        #     quantity = product_html.find('div', {'class': 'e-kiq44a'})
+        if not quantity:
+            return ''
         return quantity.text.strip()
     
     def _get_product_image(self, product_html):

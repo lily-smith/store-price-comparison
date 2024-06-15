@@ -54,21 +54,29 @@ class Wegmans(Store):
             time.sleep(0.1)
 
     def _get_product_name(self, product_html):
-        return product_html.find('div', {'class': 'css-60bqrp'}).get('title')
+        name_div = product_html.find('div', {'class': 'css-131yigi'})
+        if name_div:
+            return name_div.get('title')
+        return ''
 
     def _get_product_price(self, product_html):
-        return product_html.find('span', {'class': 'css-zqx11d'}).text.split()[0]
+        price_element = product_html.find('span', {'class': 'css-zqx11d'})
+        if not price_element:
+            return ''
+        return price_element.text.split()[0]
     
     def _get_product_quantity(self, product_html):
-        return product_html.find('div', {'class': 'css-1kh7mkb'}).get('title')
+        quantity = product_html.find('div', {'class': 'css-1kh7mkb'})
+        if not quantity:
+            return ''
+        return quantity.get('title')
     
     def _get_product_image(self, product_html):
         return product_html.find('img').get('src')
     
     def _get_product_availability(self, product_html):
         out_of_stock = product_html.find('span', {'data-test': 'item-tile-out-of-stock'})
-        return out_of_stock != None
+        return out_of_stock == None
     
     def _get_product_elements(self, soup):
         return soup.find_all('div', {'aria-label': 'Product'})
-

@@ -73,10 +73,9 @@ def get_aldi_products(zip_code, store_city, search_term, headless=True):
 #     print()
 
 def get_prices_for_product():
-  aldi = Aldi('Aldi', '02155', 'Medford')
-  products = aldi.get_products('eggs', headless=True)
+  aldi = Aldi('02155', 'Medford')
+  products = aldi.get_products('eggs', headless=False)
   return products[:min(10, len(products))]
-
 
 
 
