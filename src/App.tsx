@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
 
@@ -17,11 +16,11 @@ function App() {
         <p>API value:</p>
         { 
           apiValue.map((item) => (
-              <div key={`${item.name},${item.price}`}>
-                <p>{`${item.name} (${item.quantity})`}</p>
-                <p>{item.price}</p>
-                <p>{item.is_in_stock ? 'In Stock' : 'Out of Stock'}</p>
-                <img src={item.image_url} width='150'/>
+              <div key={`${item['name']},${item['price']}`}>
+                <p>{`${item['name']} (${item['quantity']})`}</p>
+                <p>{item['price']}</p>
+                <p>{item['is_in_stock'] ? 'In Stock' : 'Out of Stock'}</p>
+                <img src={item['image_url']} width='150'/>
               </div>
             )
           ) 
