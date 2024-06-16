@@ -3,7 +3,7 @@ from .utils.stores.store_prices import get_prices_for_product
 
 app = Flask(__name__)
 
-@app.route('/prices/<int:store_id>', methods=['GET'])
+@app.route('/api/prices/<int:store_id>', methods=['GET'])
 def get_prices(store_id):
     args = request.args
     if ('search_term' not in args or 'zip_code' not in args or 'city_name' not in args):

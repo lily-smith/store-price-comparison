@@ -25,7 +25,7 @@ function App() {
     setApiValue([]);
     setIsSearching(true);
     try {
-      const requestUrl = encodeURI(`/prices/${store}?search_term=${searchTerm}&zip_code=${zipCode}&city_name=${city}`)
+      const requestUrl = encodeURI(`api/prices/${store}?search_term=${searchTerm}&zip_code=${zipCode}&city_name=${city}`)
       const response = await axios.get(requestUrl);
       if (response.status === 200) {
         setApiValue(response.data);
