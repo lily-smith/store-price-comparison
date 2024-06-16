@@ -16,8 +16,10 @@ function App() {
   });
   const [isSearching, setIsSearching] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [searchRun, setSearchRun] = useState(false);
 
   const handleSearch = async () => {
+    setSearchRun(true);
     const { store, searchTerm, zipCode, city } = searchOptions;
     setErrorMessage('');
     setApiValue([]);
@@ -105,7 +107,12 @@ function App() {
                 }
               </SimpleGrid>
               :
-              <Text>{`There were no results for ${searchOptions.searchTerm}`}</Text>
+              (
+                searchRun && searchOptions.searchTerm.length > 0 ?
+                <Text>{`There were no results for ${searchOptions.searchTerm}`}</Text>
+                :
+                null
+              )
             }
           </Center>
         }
