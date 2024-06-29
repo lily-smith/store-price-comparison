@@ -108,7 +108,7 @@ function App() {
               </SimpleGrid>
               :
               (
-                searchRun && searchOptions.searchTerm.length > 0 ?
+                searchRun && searchOptions.searchTerm.length > 0 && errorMessage === '' ?
                 <Text>{`There were no results for ${searchOptions.searchTerm}`}</Text>
                 :
                 null
