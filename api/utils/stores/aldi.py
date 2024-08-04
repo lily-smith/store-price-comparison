@@ -26,8 +26,8 @@ class Aldi(Store):
         zip_code_input.press('Enter')
 
         select_buttons = page.get_by_role('button', name='Select')
-        select_buttons.wait_for()
-        select_buttons.all()[0].click()
+        select_buttons.nth(0).wait_for()
+        select_buttons.nth(0).click()
 
     def _find_product_page(self, page, search_term):
         page.goto(self.URL.format(search_term))
@@ -45,7 +45,7 @@ class Aldi(Store):
         return ''
 
     def _get_product_price(self, product_html):
-        price_div = product_html.find('span', {'class': 'base-price__regular'})
+        price_div = self._get_price_element(product_html)
         if price_div:
             price = price_div.text.strip()
         else:

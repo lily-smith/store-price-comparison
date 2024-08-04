@@ -60,7 +60,7 @@ class Wegmans(Store):
         return ''
 
     def _get_product_price(self, product_html):
-        price_element = product_html.find('span', {'class': 'css-zqx11d'})
+        price_element = self._get_price_element(product_html)
         if not price_element:
             return ''
         return price_element.text.split()[0]

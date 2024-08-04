@@ -1,0 +1,14 @@
+{
+  "aldi": {
+    "zip_code": "07036",
+    "city_name": "Linden",
+    "name": "White Bread,  20 oz",
+    "quantity": "20 oz"
+  },
+  "wegmans": {
+    "zip_code": "22902",
+    "city_name": "Charlottesville",
+    "name": "Wegmans Giant White Bread",
+    "quantity": "22 oz ($0.06/oz)"
+  }
+}
