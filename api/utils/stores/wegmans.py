@@ -6,10 +6,8 @@ class Wegmans(Store):
     BASE_URL = 'https://shop.wegmans.com'
     URL = 'https://shop.wegmans.com/search?search_term={0}&search_is_autocomplete=false'
 
-    def __init__(self, zip_code, city_name):
-        self.__zip_code = zip_code
-        self.__city_name = city_name
-        super(Wegmans, self).__init__('Wegmans', zip_code, city_name)
+    def __init__(self, zip_code, city_name, product_tags = {}):
+        super(Wegmans, self).__init__('Wegmans', zip_code, city_name, product_tags)
 
     def _get_test_id_attribute(self):
         return 'data-test'
@@ -34,10 +32,10 @@ class Wegmans(Store):
 
         zip_code_input = page.get_by_label('Enter City or Zip code')
         zip_code_input.wait_for()
-        zip_code_input.fill(self.__zip_code)
+        zip_code_input.fill(self._zip_code)
         zip_code_input.press('Enter')
 
-        store_select = page.get_by_label(f'Select {self.__city_name} Store')
+        store_select = page.get_by_label(f'Select {self._city_name} Store')
         store_select.wait_for()
         store_select.click()
 
@@ -54,9 +52,12 @@ class Wegmans(Store):
             time.sleep(0.1)
 
     def _get_product_name(self, product_html):
-        name_div = product_html.find('div', {'class': 'css-131yigi'})
+        name_div = product_html.find(
+            self._product_tags['name']['element'], 
+            self._product_tags['name']['tags']
+        )
         if name_div:
-            return name_div.get('title')
+            return name_div.text.strip()
         return ''
 
     def _get_product_price(self, product_html):
@@ -66,7 +67,10 @@ class Wegmans(Store):
         return price_element.text.split()[0]
     
     def _get_product_quantity(self, product_html):
-        quantity = product_html.find('div', {'class': 'css-1kh7mkb'})
+        quantity = product_html.find(
+            self._product_tags['quantity']['element'], 
+            self._product_tags['quantity']['tags']
+        )
         if not quantity:
             return ''
         return quantity.get('title')

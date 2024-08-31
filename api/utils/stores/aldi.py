@@ -6,10 +6,8 @@ class Aldi(Store):
     BASE_URL = 'https://new.aldi.us'
     URL = 'https://new.aldi.us/results?q={0}'
 
-    def __init__(self, zip_code, city_name):
-        self.__zip_code = zip_code
-        self.__city_name = city_name
-        super(Aldi, self).__init__('Aldi', zip_code, city_name)
+    def __init__(self, zip_code, city_name, product_tags = {}):
+        super(Aldi, self).__init__('Aldi', zip_code, city_name, product_tags)
     
     def _set_store_location(self, page):
         page.goto(self.BASE_URL)
@@ -22,7 +20,7 @@ class Aldi(Store):
         continue_button.click()
 
         zip_code_input = page.get_by_placeholder('ZIP code')
-        zip_code_input.fill(self.__zip_code)
+        zip_code_input.fill(self._zip_code)
         zip_code_input.press('Enter')
 
         select_buttons = page.get_by_role('button', name='Select')
@@ -39,10 +37,13 @@ class Aldi(Store):
             time.sleep(0.1)
 
     def _get_product_name(self, product_html):
-        name_div = product_html.find('div', {'class': 'product-tile__name'})
-        if name_div:
-            return name_div.find('p').text.strip()
-        return ''
+        name_div = product_html.find(
+            self._product_tags['name']['element'], 
+            self._product_tags['name']['tags']
+        )
+        if not name_div:
+            return ''
+        return name_div.text.strip()
 
     def _get_product_price(self, product_html):
         price_div = self._get_price_element(product_html)
@@ -53,7 +54,10 @@ class Aldi(Store):
         return price
     
     def _get_product_quantity(self, product_html):
-        quantity = product_html.find('div', {'data-test': 'product-tile__product-detail'})
+        quantity = product_html.find(
+            self._product_tags['quantity']['element'], 
+            self._product_tags['quantity']['tags']
+        )
         if not quantity:
             return ''
         return quantity.text.strip()

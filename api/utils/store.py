@@ -10,10 +10,11 @@ class Store(ABC):
         "Chrome/69.0.3497.100 Safari/537.36"
     )
 
-    def __init__(self, name, zip_code, city_name):
+    def __init__(self, name, zip_code, city_name, product_tags):
         self._name = name
         self._zip_code = zip_code
         self._city_name = city_name
+        self._product_tags = product_tags
 
     def _get_test_id_attribute(self):
         return None
@@ -47,7 +48,10 @@ class Store(ABC):
         self.__clean_attrs(name_element.attrs)
         quantity_element = soup.find(lambda tag: tag.name and tag.text == quantity)
         self.__clean_attrs(quantity_element.attrs)
-        return {'name': name_element.attrs, 'quantity': quantity_element.attrs}
+        return {
+            'name': {'element': name_element.name, 'tags': name_element.attrs}, 
+            'quantity': {'element': quantity_element.name, 'tags': quantity_element.attrs}
+        }
     
     def _get_price_element(self, product_html):
         return product_html.find(lambda tag: tag.name and re.match(r'\$\d+\.\d{2}', tag.text))
