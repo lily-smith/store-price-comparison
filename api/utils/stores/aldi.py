@@ -34,7 +34,7 @@ class Aldi(Store):
         
         for _ in range(10):
             page.keyboard.press('PageDown')
-            time.sleep(0.1)
+            time.sleep(0.01)
 
     def _get_product_name(self, product_html):
         name_div = product_html.find(
