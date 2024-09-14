@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
-import re
 from .wegmans import Wegmans
 from .aldi import Aldi
+import json
+import re
 
 stores = {
     'aldi': {
@@ -73,10 +74,20 @@ def get_aldi_products(zip_code, store_city, search_term, headless=True):
 #     print()
 
 def get_prices_for_product():
-  aldi = Aldi('02155', 'Medford')
-  products = aldi.get_products('eggs', headless=False)
-  return products[:min(10, len(products))]
+    aldi = Aldi('02155', 'Medford', get_product_tags('aldi'))
+    products = aldi.get_products('eggs', headless=True)
+    return products[:min(10, len(products))]
 
+def get_product_tags(store):
+    with open('sample_product_info.json') as file:
+        file_json = json.load(file)
+        sample_product = file_json[store]
+        if store == 'aldi':
+            store = Aldi(sample_product['zip_code'], sample_product['city_name'])
+        if store == 'wegmans':
+            store = Wegmans(sample_product['zip_code'], sample_product['city_name'])
+        print(sample_product)
+        page_html = store.get_page_as_html(sample_product['name'])  
+        return store.get_product_html_tags(page_html, sample_product['name'], sample_product['quantity'])
 
-
-    
+print(get_prices_for_product())

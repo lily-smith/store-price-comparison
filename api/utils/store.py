@@ -10,10 +10,11 @@ class Store(ABC):
         "Chrome/69.0.3497.100 Safari/537.36"
     )
 
-    def __init__(self, name, zip_code, city_name):
+    def __init__(self, name, zip_code, city_name, product_tags):
         self._name = name
         self._zip_code = zip_code
         self._city_name = city_name
+        self._product_tags = product_tags
 
     def _get_test_id_attribute(self):
         return None
@@ -26,7 +27,7 @@ class Store(ABC):
     def _find_product_page(self, page, search_term):
         ...
 
-    def __get_page_as_html(self, search_term, headless=True):
+    def get_page_as_html(self, search_term, headless=True):
         with sync_playwright() as playwright:
             test_id_attribute = self._get_test_id_attribute()
             if test_id_attribute:
@@ -37,6 +38,23 @@ class Store(ABC):
             self._set_store_location(page)
             self._find_product_page(page, search_term)
             return page.content()
+    
+    def __clean_attrs(self, attrs):
+        attrs.pop('title', None)
+        
+    def get_product_html_tags(self, page_html, product_name, quantity):
+        soup = BeautifulSoup(page_html, 'html.parser')
+        name_element = soup.find(lambda tag: tag.name and tag.text == product_name)
+        self.__clean_attrs(name_element.attrs)
+        quantity_element = soup.find(lambda tag: tag.name and tag.text == quantity)
+        self.__clean_attrs(quantity_element.attrs)
+        return {
+            'name': {'element': name_element.name, 'tags': name_element.attrs}, 
+            'quantity': {'element': quantity_element.name, 'tags': quantity_element.attrs}
+        }
+    
+    def _get_price_element(self, product_html):
+        return product_html.find(lambda tag: tag.name and re.match(r'\$\d+\.\d{2}', tag.text))
         
     @abstractmethod
     def _get_product_name(self, product_html):
@@ -72,7 +90,7 @@ class Store(ABC):
         }
 
     def get_products(self, search_term, headless=True):
-        page_html = self.__get_page_as_html(search_term, headless)
+        page_html = self.get_page_as_html(search_term, headless)
         soup = BeautifulSoup(page_html, 'html.parser')
         product_elements = self._get_product_elements(soup)
         products = []
