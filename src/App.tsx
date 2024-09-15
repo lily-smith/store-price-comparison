@@ -45,7 +45,14 @@ function App() {
     const newOptions = { ...searchOptions };
     newOptions[optionName] = target.value;
     setSearchOptions({ ...newOptions });
-  }
+  };
+
+  const disableSearch = () => (
+    isSearching || searchOptions.store.length === 0 || 
+    searchOptions.city.length === 0 || 
+    searchOptions.zipCode.length === 0 ||
+    searchOptions.searchTerm.length === 0
+  );
 
   return (
     <ChakraProvider>
@@ -78,7 +85,7 @@ function App() {
             onChange={(e) => handleOptionChange(e, 'city')}
           />
           <Box w='50px'>
-            <Button onClick={handleSearch}>Search</Button>
+            <Button onClick={handleSearch} isDisabled={disableSearch()}>Search</Button>
           </Box>
         </HStack>
           { errorMessage !== '' ? <Center height='80vh'><Text size='xl'>{errorMessage}</Text></Center> : null }
