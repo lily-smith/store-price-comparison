@@ -1,5 +1,5 @@
-from .wegmans import Wegmans
-from .aldi import Aldi
+from api.utils.stores.wegmans import Wegmans
+from api.utils.stores.aldi import Aldi
 import json
 from datetime import datetime
 
