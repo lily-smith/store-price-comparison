@@ -45,11 +45,18 @@ function App() {
     const newOptions = { ...searchOptions };
     newOptions[optionName] = target.value;
     setSearchOptions({ ...newOptions });
-  }
+  };
+
+  const disableSearch = () => (
+    isSearching || searchOptions.store.length === 0 || 
+    searchOptions.city.length === 0 || 
+    searchOptions.zipCode.length === 0 ||
+    searchOptions.searchTerm.length === 0
+  );
 
   return (
     <ChakraProvider>
-      <Box>
+      <Box mt={5}>
         <HStack justify='center'>
           <Select 
             w='150px'
@@ -78,13 +85,13 @@ function App() {
             onChange={(e) => handleOptionChange(e, 'city')}
           />
           <Box w='50px'>
-            <Button onClick={handleSearch}>Search</Button>
+            <Button onClick={handleSearch} isDisabled={disableSearch()}>Search</Button>
           </Box>
         </HStack>
-        <Center>{ errorMessage !== '' ? <p>{errorMessage}</p> : null }</Center>
+          { errorMessage !== '' ? <Center height='80vh'><Text size='xl'>{errorMessage}</Text></Center> : null }
         { 
           isSearching ? 
-          <HStack justify='center'>
+          <HStack height='80vh' justify='center' align='center'>
             <p>Loading results</p>
             <Spinner />
           </HStack>
@@ -92,7 +99,7 @@ function App() {
           <Center>
             {
               apiValue.length > 0 ?
-              <SimpleGrid minChildWidth='200px' spacing='30px' width='70%'>
+              <SimpleGrid minChildWidth='200px' spacing='30px' width='70vw' height='80vh' mt={5}>
                 {
                   apiValue.map((item) => (
                     <Product 
@@ -109,7 +116,11 @@ function App() {
               :
               (
                 searchRun && searchOptions.searchTerm.length > 0 && errorMessage === '' ?
-                <Text>{`There were no results for ${searchOptions.searchTerm}`}</Text>
+                <Center height='80vh'>
+                  <Text fontSize='xl'>
+                    {`There were no results for ${searchOptions.searchTerm}`}
+                  </Text>
+                </Center>
                 :
                 null
               )

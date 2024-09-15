@@ -96,7 +96,7 @@ class Store(ABC):
         products = []
         for product_html in product_elements:
             name = self._get_product_name(product_html)
-            if not re.match(f'.*{search_term}.*', name.lower()):
+            if not any (re.match(f'.*{word}.*', name.lower()) for word in search_term.split(' ')):
                 continue
             products.append(self.__get_product_info(product_html))
         return products
