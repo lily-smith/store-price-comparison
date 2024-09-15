@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, Response
-from .utils.stores.store_prices import get_prices_for_product
+from api.utils.stores.store_prices import get_prices_for_product
 
 app = Flask(__name__)
 

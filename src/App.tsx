@@ -1,8 +1,8 @@
 import './App.css';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import axios from 'axios';
 import { 
-  ChakraProvider, Select, Input, Button, VStack, HStack, Box, Spinner, SimpleGrid, Center, Text
+  ChakraProvider, Select, Input, Button, HStack, Box, Spinner, SimpleGrid, Center, Text
 } from '@chakra-ui/react'
 import { Product } from './components/Product';
 

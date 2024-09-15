@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
-from .wegmans import Wegmans
-from .aldi import Aldi
+from api.utils.stores.wegmans import Wegmans
+from api.utils.stores.aldi import Aldi
 import json
 import re
 
