@@ -2,7 +2,17 @@ import './App.css';
 import { FormEvent, useState } from 'react';
 import axios from 'axios';
 import { 
-  ChakraProvider, Select, Input, Button, HStack, Box, Spinner, SimpleGrid, Center, Text
+  ChakraProvider, 
+  Select, 
+  Input, 
+  Button, 
+  HStack, 
+  Box, 
+  Spinner, 
+  SimpleGrid, 
+  Center, 
+  Text, 
+  Stack
 } from '@chakra-ui/react'
 import { Product } from './components/Product';
 
@@ -25,7 +35,9 @@ function App() {
     setApiValue([]);
     setIsSearching(true);
     try {
-      const requestUrl = encodeURI(`api/prices/${store}?search_term=${searchTerm}&zip_code=${zipCode}&city_name=${city}`)
+      const requestUrl = encodeURI(
+        `api/prices/${store}?search_term=${searchTerm.toLowerCase()}&zip_code=${zipCode}&city_name=${city.toLowerCase()}`
+      )
       const response = await axios.get(requestUrl);
       if (response.status === 200) {
         setApiValue(response.data);
@@ -57,9 +69,9 @@ function App() {
   return (
     <ChakraProvider>
       <Box mt={5}>
-        <HStack justify='center'>
+        <Stack direction={['column', 'row']} justify='center' align='center'>
           <Select 
-            w='150px'
+            w={['80vw', '150px']}
             placeholder='Select a store' 
             onChange={(e) => handleOptionChange(e, 'store')}
           >
@@ -67,31 +79,31 @@ function App() {
             <option value={1}>Wegmans</option>
           </Select>
           <Input 
-            w='200px'
+            w={['80vw', '200px']}
             variant='outline'
             placeholder='Enter search term'
             onChange={(e) => handleOptionChange(e, 'searchTerm')}
           />
           <Input 
-            w='200px'
+            w={['80vw', '200px']}
             variant='outline' 
             placeholder='Enter zip code' 
             onChange={(e) => handleOptionChange(e, 'zipCode')}
           />
           <Input 
-            w='200px'
+            w={['80vw', '200px']}
             variant='outline'
             placeholder='Enter city name' 
             onChange={(e) => handleOptionChange(e, 'city')}
           />
-          <Box w='50px'>
-            <Button onClick={handleSearch} isDisabled={disableSearch()}>Search</Button>
-          </Box>
-        </HStack>
-          { errorMessage !== '' ? <Center height='80vh'><Text size='xl'>{errorMessage}</Text></Center> : null }
+          <Button colorScheme='teal' w={['80vw', '70px']} onClick={handleSearch} isDisabled={disableSearch()}>
+            Search
+          </Button>
+        </Stack>
+          { errorMessage !== '' ? <Center height={['40vh', '80vh']}><Text size='xl'>{errorMessage}</Text></Center> : null }
         { 
           isSearching ? 
-          <HStack height='80vh' justify='center' align='center'>
+          <HStack height={['40vh', '80vh']} justify='center' align='center'>
             <p>Loading results</p>
             <Spinner />
           </HStack>
@@ -99,7 +111,7 @@ function App() {
           <Center>
             {
               apiValue.length > 0 ?
-              <SimpleGrid minChildWidth='200px' spacing='30px' width='70vw' height='80vh' mt={5}>
+              <SimpleGrid minChildWidth='200px' spacing='30px' w='70vw' mt={5} mb={10}>
                 {
                   apiValue.map((item) => (
                     <Product 
