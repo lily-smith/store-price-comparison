@@ -11,6 +11,9 @@ class Aldi(Store):
     
     def _set_store_location(self, page):
         page.goto(self.BASE_URL)
+        acknowledge_button = page.get_by_role('button', name='Got it')
+        if acknowledge_button:
+            acknowledge_button.click()
         change_store_button = page.get_by_role('button', name=re.compile('\d{5}, \w+'))
         change_store_button.wait_for()
         change_store_button.click()

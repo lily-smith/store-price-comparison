@@ -1,14 +1,54 @@
 from api.utils.store import Store
 import re
 import time
+from bs4 import BeautifulSoup
 
 class Wegmans(Store):
     BASE_URL = 'https://shop.wegmans.com'
     URL = 'https://shop.wegmans.com/search?search_term={0}&search_is_autocomplete=false'
+    STORES_URL = 'https://www.wegmans.com/stores/'
 
     def __init__(self, zip_code, city_name, product_tags = {}):
         super(Wegmans, self).__init__('Wegmans', zip_code, city_name, product_tags)
 
+    @classmethod
+    def __get_store_location(self, page, store_url):
+        page.goto(store_url)
+        store_address = page.get_by_text(re.compile(r', \w+ \d{5}', re.IGNORECASE))
+        store_address.wait_for()
+        matches = re.search(
+            re.compile(r'([\s\S]+)[\n,](.+), (\w+) (\d{5})'), 
+            store_address.all_inner_texts()[0]
+        )
+        return (
+            matches.group(1).strip(), 
+            matches.group(2).strip(), 
+            matches.group(3).strip().upper(), 
+            matches.group(4).strip()
+        )
+
+    @classmethod
+    def _get_store_locations(self, page):    
+        page.goto(self.STORES_URL)
+        store_link = page.get_by_role('link')
+        store_link.nth(10).wait_for()
+
+        page_html = page.content()
+        soup = BeautifulSoup(page_html, 'html.parser')
+        store_links = soup.find_all('a', { 'href': re.compile(r'/stores/\w+')})
+        store_locations = []
+        for store_link in store_links:
+            store_href = store_link.get('href')
+            store_url = self.STORES_URL + store_href if not store_href.startswith(self.STORES_URL) else store_href
+            store_name = store_link.text
+            street, city, state_abbr, zip_code = self.__get_store_location(page, store_url)
+            store_locations.append({ 
+                'url': store_url, 'state_abbr': state_abbr, 'name': store_name, 
+                'street': street, 'city': city, 'zip_code': zip_code
+            })
+        return store_locations
+
+    @classmethod
     def _get_test_id_attribute(self):
         return 'data-test'
     

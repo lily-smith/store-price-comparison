@@ -31,7 +31,7 @@ def get_store_product_tags(store_id):
             store = Aldi(sample_product['zip_code'], sample_product['city_name'])
         elif store_id == 1:
             store = Wegmans(sample_product['zip_code'], sample_product['city_name'])
-        page_html = store.get_page_as_html(sample_product['name'])
+        page_html = store.get_page_as_html(sample_product['name'], headless=False)
         current_product_tags_cache = store.get_product_html_tags(page_html, sample_product['name'], sample_product['quantity'])
         product_tags_cache[store_id] = current_product_tags_cache
         product_tags_cache[store_id]['last_updated'] = datetime.now().isoformat()
@@ -57,7 +57,7 @@ def get_prices_for_product(store_id, search_term, zip_code, city_name):
     if not store:
         return []
     print('search term:', search_term)
-    products = store.get_products(search_term, headless=True)
+    products = store.get_products(search_term, headless=False)
     product_cache[store_id][key] = {
         'product': products[:min(10, len(products))],
         'last_updated': datetime.now().isoformat()

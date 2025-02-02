@@ -16,8 +16,25 @@ class Store(ABC):
         self._city_name = city_name
         self._product_tags = product_tags
 
+    @classmethod
+    def get_store_list(self, headless=True):
+        with sync_playwright() as playwright:
+            test_id_attribute = self._get_test_id_attribute()
+            if test_id_attribute:
+                playwright.selectors.set_test_id_attribute(test_id_attribute)
+            browser = playwright.chromium.launch() if headless \
+                else playwright.chromium.launch(headless=False, slow_mo=2000)
+            page = browser.new_page(user_agent=self.USER_AGENT)
+            return self._get_store_locations(page)
+
+    @classmethod
     def _get_test_id_attribute(self):
         return None
+
+    @staticmethod
+    @abstractmethod
+    def _get_store_locations(self, page):
+        ...
 
     @abstractmethod
     def _set_store_location(self, page):
